@@ -4,7 +4,7 @@ import requests
 from serpapi import GoogleSearch
 from openai import OpenAI
 
-# Pega as chaves de forma segura das Variáveis de Ambiente do GitHub
+# --- CONFIGURAÇÕES DE API (Lidas das variáveis de ambiente do GitHub) ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -87,7 +87,7 @@ def filtrar_e_montar_relatorio(texto_bruto):
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",  # Rápido, econômico e excelente para triagem
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": prompt_sistema},
             {"role": "user", "content": f"Resultados encontrados hoje:\n\n{texto_bruto}"}
@@ -98,7 +98,6 @@ def filtrar_e_montar_relatorio(texto_bruto):
 
 def enviar_telegram(mensagem):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    # Divide a mensagem se passar do limite de 4096 caracteres do Telegram
     partes = [mensagem[i:i+4000] for i in range(0, len(mensagem), 4000)]
     
     for parte in partes:
