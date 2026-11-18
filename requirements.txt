@@ -1,4 +1,3 @@
 requests
-schedule
 google-search-results
 openai
