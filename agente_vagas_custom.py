@@ -117,13 +117,6 @@ def rotina_diaria():
     enviar_telegram(cabecalho + relatorio)
     print("Relatório enviado com sucesso!")
 
-# Roda todo dia às 19:50 para você receber pontualmente às 20:00
-schedule.every().day.at("19:50").do(rotina_diaria)
-
 if __name__ == "__main__":
-    print("Agente de Vagas ativo! Aguardando horário agendado...")
-    # Descomente a linha abaixo se quiser testar imediatamente ao rodar o script:
-    # rotina_diaria()
-    while True:
-        schedule.run_pending()
-        time.sleep(30)
+    print("Iniciando execução do Agente de Vagas...")
+    rotina_diaria()
