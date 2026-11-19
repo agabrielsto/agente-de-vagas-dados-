@@ -16,7 +16,9 @@ Vagas Pra Jr, Viu Uma Vaga, Grupo de Vagas, Cia de Estágios, Indeed, LinkedIn J
 
 Áreas: análise, ciência e engenharia de dados, banco de dados, BI e suporte N1/N2.
 
-Para mudar sites ou cargos, edite `SITES_ALVO` e `CARGOS_ALVO` no começo do `agente_vagas_custom.py`.
+Local: Rio de Janeiro e região metropolitana.
+
+Para mudar sites, nível, local ou áreas, edite `SITES_ALVO`, `NIVEIS`, `LOCAIS` e `AREAS` no começo do `agente_vagas_custom.py`.
 
 ## Como usar
 
@@ -45,13 +47,7 @@ Vá em **Actions → Agente Diário de Vagas → Run workflow** para testar na h
 
 ## Horário de execução
 
-O horário fica no `cron` do `vagas.yml` e o GitHub usa UTC. Para receber às 20h no horário de Brasília, use:
-
-```yaml
-cron: '0 23 * * *'
-```
-
-O GitHub pode atrasar execuções agendadas em alguns minutos.
+O relatório chega às 20h (Brasília). O workflow dispara às 19:30 (`cron: '30 22 * * *'`, em UTC) e o script espera até 20:00 para enviar, porque o GitHub não garante o minuto exato das execuções agendadas. Em execuções manuais ele envia na hora.
 
 ## Rodando localmente
 

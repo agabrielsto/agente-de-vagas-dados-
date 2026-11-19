@@ -29,7 +29,7 @@ SITES_ALVO = (
 
 # consulta curta: o Google ignora o que passa de ~32 termos
 NIVEIS = '("estágio" OR "estagio" OR "júnior" OR "junior")'
-LOCAIS = '("Rio de Janeiro" OR "RJ" OR "remoto")'
+LOCAIS = '("Rio de Janeiro" OR "RJ" OR "Niterói")'
 AREAS = '("dados" OR "suporte n1" OR "suporte n2" OR "analista de suporte")'
 
 # triagem local antes de chamar a OpenAI
@@ -41,7 +41,9 @@ AREA_OK = re.compile(
     r"dados|\bdata\b|\bbi\b|power\s?bi|\bsql\b|analytics|suporte|help\s?desk|service\s?desk",
     re.I,
 )
-LOCAL_OK = re.compile(r"rio de janeiro|\brj\b|niter[oó]i|remot[oa]|home\s?office", re.I)
+LOCAL_OK = re.compile(
+    r"rio de janeiro|\brj\b|niter[oó]i|s[aã]o gon[cç]alo|duque de caxias|nova igua[cç]u", re.I
+)
 OUTRA_CIDADE = re.compile(
     r"s[aã]o paulo|belo horizonte|curitiba|porto alegre|bras[ií]lia|salvador|recife|"
     r"fortaleza|goi[aâ]nia|florian[oó]polis|campinas|vit[oó]ria|manaus|bel[eé]m",
@@ -53,6 +55,7 @@ OUTRA_UF = re.compile(
 )
 
 SITES_POR_BUSCA = 3
+EXIGIR_LOCAL = True  # False também aceita vagas sem local no resumo
 LOCALIZACAO = "Rio de Janeiro, State of Rio de Janeiro, Brazil"
 FUSO = ZoneInfo("America/Sao_Paulo")
 
@@ -73,8 +76,8 @@ a TODOS os critérios abaixo:
   dados, BI ou suporte técnico (N1/N2). Descarte qualquer outra área, mesmo
   que seja estágio ou júnior (vendas, marketing, RH, financeiro,
   desenvolvimento de software etc.). Na dúvida, descarte.
-- Local: Rio de Janeiro (RJ) ou remoto. Descarte vagas presenciais ou
-  híbridas de outras cidades ou estados. Se o local não aparecer no
+- Local: Rio de Janeiro (RJ) ou região metropolitana. Descarte vagas de
+  qualquer outro local, inclusive remotas. Se o local não aparecer no
   resultado, mantenha a vaga e escreva "Local: não informado".
 
 Regras de saída:
@@ -136,8 +139,8 @@ def passa_triagem(vaga: Vaga) -> bool:
         return False
     if LOCAL_OK.search(texto):
         return True
-    # sem RJ/remoto: só barra se houver outro local explícito
-    return not (OUTRA_CIDADE.search(texto) or OUTRA_UF.search(texto))
+    # sem menção ao RJ: só passa se EXIGIR_LOCAL=False e não houver outro local
+    return not EXIGIR_LOCAL and not (OUTRA_CIDADE.search(texto) or OUTRA_UF.search(texto))
 
 
 def montar_query(sites: tuple[str, ...]) -> str:
@@ -327,7 +330,7 @@ def main() -> int:
     aguardar_horario()
     data = datetime.now(FUSO).strftime("%d/%m/%Y")
     try:
-        enviar_telegram(config, f"Vagas de dados e suporte - {data}\n\n{corpo}")
+        enviar_telegram(config, f"Vagas de dados e suporte (Rio de Janeiro) - {data}\n\n{corpo}")
     except TelegramError as exc:
         log.error("Falha ao enviar o relatório: %s", exc)
         return 1
@@ -338,4 +341,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-    
