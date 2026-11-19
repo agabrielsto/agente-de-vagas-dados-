@@ -2,8 +2,15 @@ name: Agente Diário de Vagas
 
 on:
   schedule:
+<<<<<<< HEAD
     - cron: '0 23 * * *'
   workflow_dispatch: 
+=======
+    # roda às 19:30 (Brasília); o script segura o envio até 20:00
+    - cron: '30 19 * * *'
+      timezone: 'America/Sao_Paulo'
+  workflow_dispatch:
+>>>>>>> de696ad (Atualiza cronograma do workflow para execução às 19:30 e ajusta script para melhor organização e legibilidade)
 
 jobs:
   executar-agente:
@@ -29,5 +36,9 @@ jobs:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+<<<<<<< HEAD
         run: |
           python agente_vagas_custom.py
+=======
+        run: python agente_vagas_custom.py
+>>>>>>> de696ad (Atualiza cronograma do workflow para execução às 19:30 e ajusta script para melhor organização e legibilidade)
